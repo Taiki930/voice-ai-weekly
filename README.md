@@ -7,7 +7,7 @@
 | 组件 | 技术 |
 |------|------|
 | 定时触发 | GitHub Actions (cron) |
-| 新闻搜索 | Serper API (Google Search) |
+| 新闻搜索 | Firecrawl Search API |
 | 内容整理 | DeepSeek API (deepseek-chat) |
 | 邮件发送 | Resend |
 
@@ -21,7 +21,7 @@
 
 | Secret | 说明 | 获取方式 |
 |--------|------|---------|
-| `SERPER_API_KEY` | Serper API 密钥 | 注册 https://serper.dev |
+| `FIRECRAWL_API_KEY` | Firecrawl API 密钥 | 注册 https://firecrawl.dev |
 | `DEEPSEEK_API_KEY` | DeepSeek API 密钥 | 注册 https://platform.deepseek.com |
 | `RESEND_API_KEY` | Resend API 密钥 | 注册 https://resend.com |
 
@@ -38,7 +38,7 @@
 ### 5. 本地运行
 
 ```bash
-export SERPER_API_KEY="your-key"
+export FIRECRAWL_API_KEY="your-key"
 export DEEPSEEK_API_KEY="your-key"
 export RESEND_API_KEY="your-key"
 
@@ -57,7 +57,7 @@ cd src && python main.py
 
 | 服务 | 每次运行消耗 | 免费额度 |
 |------|------------|---------|
-| Serper | ~5 次搜索 | 2500 次免费额度（注册赠送） |
+| Firecrawl | ~5 次搜索 (5 credits) | 500 credits/月 |
 | DeepSeek API | ~4K input + ~2K output tokens | 按量计费 ~$0.002/次 |
 | Resend | 1 封邮件 | 100 封/天 (免费) |
 | GitHub Actions | ~2 分钟 | 2000 分钟/月 (免费) |

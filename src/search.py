@@ -1,5 +1,5 @@
 """
-Voice AI news search module using Serper API (Google Search).
+Voice AI news search module using Firecrawl Search API.
 """
 
 import os
@@ -8,30 +8,30 @@ import requests
 
 logger = logging.getLogger(__name__)
 
-SERPER_API_URL = "https://google.serper.dev/search"
+FIRECRAWL_API_URL = "https://api.firecrawl.dev/v1"
 
 SEARCH_QUERIES = [
     '"voice AI" acquisition merger',
-    '"语音AI" OR "voice AI" 并购 收购',
+    '"voice AI" OR "语音AI" 并购 收购',
     '"voice AI startup" funding raised series',
     '"speech AI" OR "conversational AI" acquisition',
     '"voice agent" startup funding',
 ]
 
 
-def _serper_search(query: str, api_key: str, num: int = 8) -> list[dict]:
-    """Execute a single Serper (Google Search) query."""
+def _firecrawl_search(query: str, api_key: str, limit: int = 8) -> list[dict]:
+    """Execute a single Firecrawl search query."""
     headers = {
-        "X-API-KEY": api_key,
+        "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
     }
     payload = {
-        "q": query,
-        "num": num,
+        "query": query,
+        "limit": limit,
     }
     try:
         resp = requests.post(
-            SERPER_API_URL,
+            f"{FIRECRAWL_API_URL}/search",
             json=payload,
             headers=headers,
             timeout=30,
@@ -39,12 +39,12 @@ def _serper_search(query: str, api_key: str, num: int = 8) -> list[dict]:
         resp.raise_for_status()
         data = resp.json()
         results = []
-        for item in data.get("organic", []):
+        for item in data.get("data", []):
             results.append({
                 "title": item.get("title", ""),
-                "url": item.get("link", ""),
-                "description": item.get("snippet", ""),
-                "source": _extract_domain(item.get("link", "")),
+                "url": item.get("url", ""),
+                "description": item.get("description", ""),
+                "source": _extract_domain(item.get("url", "")),
             })
         return results
     except Exception as e:
@@ -82,14 +82,14 @@ def search_voice_ai_news(api_key: str | None = None) -> list[dict]:
     Returns a deduplicated list of search results:
     [{"title", "url", "description", "source"}, ...]
     """
-    api_key = api_key or os.environ.get("SERPER_API_KEY", "")
+    api_key = api_key or os.environ.get("FIRECRAWL_API_KEY", "")
     if not api_key:
-        raise ValueError("SERPER_API_KEY is required")
+        raise ValueError("FIRECRAWL_API_KEY is required")
 
     all_results = []
     for query in SEARCH_QUERIES:
         logger.info(f"Searching: {query}")
-        results = _serper_search(query, api_key)
+        results = _firecrawl_search(query, api_key)
         all_results.extend(results)
         logger.info(f"  Found {len(results)} results")
 
