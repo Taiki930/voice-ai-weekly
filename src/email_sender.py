@@ -9,7 +9,7 @@ import resend
 
 logger = logging.getLogger(__name__)
 
-EMAIL_FROM = "Voice AI Weekly <weekly@vocust.com>"
+EMAIL_FROM = "Voice AI Weekly <onboarding@resend.dev>"
 EMAIL_TO = "nhwang@vocust.com"
 
 
@@ -97,14 +97,13 @@ def send_report(
     subject = f"语音AI行业周报 | {date_str}"
     html = _render_html(md_content, date_str)
 
-    logger.info(f"Sending report to {to}...")
-    params = resend.Emails.SendParams(
-        from_=sender,
-        to=[to],
-        subject=subject,
-        html=html,
-    )
-    response = resend.Emails.send(params)
+    logger.info(f"Sending report from {sender} to {to}...")
+    response = resend.Emails.send({
+        "from": sender,
+        "to": [to],
+        "subject": subject,
+        "html": html,
+    })
     logger.info(f"Email sent successfully: {response}")
     return response
 
